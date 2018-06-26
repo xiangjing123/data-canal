@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!--消息发送配置-->
+<!--    <bean id="messageProducer" class="com.tmg.commons.mq.MessageProducer"
+          p:namesrvAddr="${mqs.namesrvAddr}"
+          init-method="init" destroy-method="close" />-->
+
+    <!-- 消息消费配置-->
+<!--    <bean id="consumerRegister" class="com.tmg.commons.listener.ConsumerRegister"
+          p:namesrvAddr="${mqs.namesrvAddr}"
+          p:filterSourceRoot="${mqs.filterSourceRoot}" />-->
+
+
+</beans>

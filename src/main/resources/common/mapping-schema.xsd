@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://yunzhiyouke.com/es"
+        elementFormDefault="qualified">
+    <element name="mappings">
+        <complexType>
+            <sequence>
+                <!--主分片数-->
+                <element name="numberOfShards" type="int" minOccurs="0" maxOccurs="1"/>
+                <!--副分片数 -->
+                <element name="numberOfReplicas" type="int" minOccurs="0" maxOccurs="1"/>
+                <!--映射-->
+                <element name="mapping" minOccurs="0" maxOccurs="unbounded">
+                    <complexType>
+                        <sequence>
+                            <!--数据域名称-->
+                            <element name="schemaName" type="string"/>
+                            <!--全局默认分词-->
+                            <element name="defaultTokenizer" minOccurs="0" maxOccurs="1">
+                                <complexType>
+                                    <sequence>
+                                        <!--主分片数-->
+                                        <element name="ik_smart" type="string" minOccurs="0" maxOccurs="1"/>
+                                        <!--副分片数 -->
+                                        <element name="path_hierarchy" type="string" minOccurs="0" maxOccurs="1"/>
+                                        <!--主分片数-->
+                                        <element name="english" type="string" minOccurs="0" maxOccurs="1"/>
+                                        <!--副分片数 -->
+                                        <element name="standard" type="string" minOccurs="0" maxOccurs="1"/>
+                                        <!--主分片数-->
+                                        <element name="ik_max_word" type="string" minOccurs="0" maxOccurs="1"/>
+                                    </sequence>
+                                </complexType>
+                            </element>
+                            <!--数据集配置-->
+                            <element name="collection" minOccurs="0" maxOccurs="unbounded">
+                                <complexType>
+                                    <sequence>
+                                        <!--数据集名称-->
+                                        <element name="name" type="string"/>
+                                        <!--数据集名称-->
+                                        <element name="indexName" type="string" minOccurs="0"/>
+                                        <!--主分片数-->
+                                        <element name="numberOfShards" type="int" minOccurs="0" maxOccurs="1"/>
+                                        <!--副分片数 -->
+                                        <element name="numberOfReplicas" type="int" minOccurs="0" maxOccurs="1"/>
+                                        <!--属性配置-->
+                                        <element name="field" minOccurs="0" maxOccurs="unbounded">
+                                            <complexType>
+                                                <sequence>
+                                                    <!-- 来源数据的列名-->
+                                                    <element name="columnName" type="string" maxOccurs="1" minOccurs="0" />
+                                                    <!--映射为ES的列名-->
+                                                    <element name="fieldName" type="string" maxOccurs="1" minOccurs="0"/>
+                                                    <!--映射类型-->
+                                                    <element name="mappingType" type="string" maxOccurs="1" minOccurs="0" />
+                                                    <!--映射的分词器-->
+                                                    <element name="tokenizer" type="string" default="standard" maxOccurs="1" minOccurs="0"/>
+                                                    <!--时间格式-->
+                                                    <element name="format" type="string" maxOccurs="1" minOccurs="0" />
+                                                    <!--聚合排序查询-->
+                                                    <element name="fieldData" type="boolean" default="false" maxOccurs="1" minOccurs="0" />
+                                                    <!--是否创建doc-values-->
+                                                    <element name="keyword" type="boolean" default="true" maxOccurs="1" minOccurs="0"/>
+                                                    <!--子域-->
+                                                    <element name="subField" minOccurs="0"  maxOccurs="unbounded" >
+                                                            <complexType>
+                                                                <sequence>
+                                                                    <!--映射为ES的列名-->
+                                                                    <element name="fieldName" type="string" maxOccurs="1" minOccurs="0"/>
+                                                                    <!--映射类型-->
+                                                                    <element name="mappingType" type="string" maxOccurs="1" minOccurs="0" />
+                                                                    <!--映射的分词器-->
+                                                                    <element name="tokenizer" type="string" default="standard" maxOccurs="1" minOccurs="0"/>
+                                                                    <!--时间格式-->
+                                                                    <element name="format" type="string" maxOccurs="1" minOccurs="0" />
+                                                                    <!--是否创建doc-values-->
+                                                                    <element name="keyword" type="boolean" default="true" maxOccurs="1" minOccurs="0"/>
+                                                                </sequence>
+                                                            </complexType>
+                                                    </element>
+                                                    <!--子属性-->
+                                                    <element name="properties" minOccurs="0"  maxOccurs="unbounded" >
+                                                        <complexType>
+                                                            <sequence>
+                                                                <!--子属性-->
+                                                                <element name="property"  maxOccurs="unbounded">
+                                                                    <complexType>
+                                                                        <sequence>
+                                                                            <!-- 来源数据的列名-->
+                                                                            <element name="columnName" type="string" maxOccurs="1" minOccurs="0" />
+                                                                            <!--映射类型-->
+                                                                            <element name="mappingType" type="string" maxOccurs="1" minOccurs="0" />
+                                                                            <!--映射的分词器-->
+                                                                            <element name="tokenizer" type="string" default="standard" maxOccurs="1" minOccurs="0"/>
+                                                                            <!--时间格式-->
+                                                                            <element name="format" type="string" maxOccurs="1" minOccurs="0" />
+                                                                            <!--是否创建doc-values-->
+                                                                            <element name="keyword" type="boolean" default="true" maxOccurs="1" minOccurs="0"/>
+                                                                        </sequence>
+                                                                    </complexType>
+                                                                </element>
+
+                                                            </sequence>
+                                                        </complexType>
+                                                    </element>
+
+                                                    <!--映射规则-->
+                                                    <element name="mappingRule" minOccurs="0" maxOccurs="1" >
+                                                        <complexType>
+                                                            <sequence >
+                                                                <!--替换规则-->
+                                                                <element name="replaceAll"  minOccurs="0" maxOccurs="unbounded">
+                                                                    <complexType>
+                                                                        <sequence>
+                                                                            <!-- 来源数据的列名-->
+                                                                            <element name="regex" minOccurs="1" maxOccurs="1"/>
+                                                                            <!--映射类型-->
+                                                                            <element name="replacement" minOccurs="1" maxOccurs="1"/>
+                                                                        </sequence>
+                                                                    </complexType>
+                                                                </element>
+
+                                                                <!--合并规则-->
+                                                                <element name="concat"  minOccurs="0" maxOccurs="unbounded">
+                                                                    <complexType>
+                                                                        <sequence  minOccurs="0" maxOccurs="unbounded">
+                                                                            <!-- 来源的类型-->
+                                                                            <element name="columnName" type="string" minOccurs="0" maxOccurs="unbounded"/>
+                                                                            <!--映射后的类型-->
+                                                                            <element name="fieldName" type="string" minOccurs="0" maxOccurs="unbounded"/>
+                                                                            <!--字符串-->
+                                                                            <element name="string" type="string"  minOccurs="0" maxOccurs="unbounded"/>
+                                                                        </sequence>
+                                                                    </complexType>
+                                                                </element>
+
+                                                            </sequence>
+                                                        </complexType>
+                                                    </element>
+
+                                                </sequence>
+                                            </complexType>
+                                        </element>
+                                        <!--触发器-->
+                                        <element name="triggers" minOccurs="0" maxOccurs="1">
+                                            <complexType>
+                                                <sequence>
+                                                    <!--合并配置-->
+                                                    <element name="onInsert" minOccurs="0" maxOccurs="1">
+                                                        <complexType>
+                                                            <sequence>
+                                                                <element name="field" maxOccurs="1">
+                                                                    <complexType>
+                                                                        <sequence>
+                                                                            <element name="insert" minOccurs="1">
+                                                                                <complexType>
+                                                                                    <sequence>
+                                                                                        <element name="indexName" type="string"/>
+                                                                                        <element name="source" minOccurs="1" maxOccurs="unbounded">
+                                                                                            <complexType>
+                                                                                                <sequence>
+                                                                                                    <element name="indexName" type="string" minOccurs="0" maxOccurs="1"/>
+                                                                                                    <element name="exportFields" type="string" minOccurs="0" maxOccurs="1"/>
+                                                                                                    <element name="condition"  minOccurs="0" maxOccurs="1">
+                                                                                                        <complexType>
+                                                                                                            <sequence>
+                                                                                                                <element name="eq" minOccurs="1" maxOccurs="unbounded">
+                                                                                                                    <complexType>
+                                                                                                                        <sequence>
+                                                                                                                            <element name="columnName" type="string"></element>
+                                                                                                                            <element name="fieldName" type="string"></element>
+                                                                                                                        </sequence>
+                                                                                                                    </complexType>
+                                                                                                                </element>
+                                                                                                            </sequence>
+                                                                                                        </complexType>
+                                                                                                    </element>
+                                                                                                    <element name="allowNull" type="boolean" default="false" minOccurs="0" maxOccurs="1"/>
+                                                                                                </sequence>
+                                                                                            </complexType>
+                                                                                        </element>
+                                                                                    </sequence>
+                                                                                </complexType>
+                                                                            </element>
+                                                                        </sequence>
+                                                                    </complexType>
+                                                                </element>
+                                                            </sequence>
+                                                        </complexType>
+                                                    </element>
+
+                                                    <!--级联更新配置-->
+                                                    <element name="onUpdate" minOccurs="0" maxOccurs="1">
+                                                        <complexType>
+                                                            <sequence>
+                                                                <element name="field" minOccurs="1" maxOccurs="unbounded">
+                                                                    <complexType>
+                                                                        <sequence minOccurs="0" maxOccurs="unbounded">
+                                                                            <element name="columnName" type="string" minOccurs="0" maxOccurs="1"/>
+                                                                            <element name="where" type="string" minOccurs="0" maxOccurs="1"/>
+                                                                            <element name="update" minOccurs="0" maxOccurs="unbounded">
+                                                                                <complexType>
+                                                                                    <sequence>
+                                                                                        <element name="field" type="string"/>
+                                                                                        <element name="value" minOccurs="0" maxOccurs="1"/>
+                                                                                        <element name="condition">
+                                                                                            <complexType>
+                                                                                                <sequence>
+                                                                                                    <element name="eq" minOccurs="1" maxOccurs="unbounded">
+                                                                                                        <complexType>
+                                                                                                            <sequence>
+                                                                                                                <element name="columnName" type="string"></element>
+                                                                                                                <element name="fieldName" type="string"></element>
+                                                                                                            </sequence>
+                                                                                                        </complexType>
+                                                                                                    </element>
+                                                                                                </sequence>
+                                                                                            </complexType>
+                                                                                        </element>
+                                                                                    </sequence>
+                                                                                </complexType>
+                                                                            </element>
+                                                                            <element name="delete"  minOccurs="0" maxOccurs="unbounded">
+                                                                                <complexType>
+                                                                                    <sequence>
+                                                                                        <element name="field" type="string"/>
+                                                                                        <element name="value" minOccurs="0" maxOccurs="1"/>
+                                                                                        <element name="condition">
+                                                                                            <complexType>
+                                                                                                <sequence>
+                                                                                                    <element name="eq" minOccurs="1" maxOccurs="unbounded">
+                                                                                                        <complexType>
+                                                                                                            <sequence>
+                                                                                                                <element name="columnName" type="string"></element>
+                                                                                                                <element name="fieldName" type="string"></element>
+                                                                                                            </sequence>
+                                                                                                        </complexType>
+                                                                                                    </element>
+                                                                                                </sequence>
+                                                                                            </complexType>
+                                                                                        </element>
+                                                                                    </sequence>
+                                                                                </complexType>
+                                                                            </element>
+                                                                        </sequence>
+                                                                    </complexType>
+                                                                </element>
+                                                            </sequence>
+                                                        </complexType>
+                                                    </element>
+
+                                                    <!--级联删除配置-->
+                                                    <element name="onDelete" minOccurs="0" maxOccurs="1">
+                                                        <complexType>
+                                                            <sequence>
+                                                                <element name="field" minOccurs="1" maxOccurs="unbounded">
+                                                                    <complexType>
+                                                                        <sequence>
+                                                                           <!-- <element name="columnName" type="string" minOccurs="0" maxOccurs="1"/>-->
+                                                                            <element name="where" type="string" minOccurs="0" maxOccurs="1"/>
+                                                                            <element name="update" minOccurs="0" maxOccurs="unbounded">
+                                                                                <complexType>
+                                                                                    <sequence>
+                                                                                        <element name="field" type="string"/>
+                                                                                        <element name="value" minOccurs="0" maxOccurs="1"/>
+                                                                                        <element name="condition">
+                                                                                            <complexType>
+                                                                                                <sequence>
+                                                                                                    <element name="eq" minOccurs="1" maxOccurs="unbounded">
+                                                                                                        <complexType>
+                                                                                                            <sequence>
+                                                                                                                <element name="columnName" type="string"></element>
+                                                                                                                <element name="fieldName" type="string"></element>
+                                                                                                            </sequence>
+                                                                                                        </complexType>
+                                                                                                    </element>
+                                                                                                </sequence>
+                                                                                            </complexType>
+                                                                                        </element>
+                                                                                    </sequence>
+                                                                                </complexType>
+                                                                            </element>
+                                                                            <element name="delete" minOccurs="0" maxOccurs="unbounded">
+                                                                                <complexType>
+                                                                                    <sequence>
+                                                                                        <element name="field" type="string"/>
+                                                                                        <element name="value" minOccurs="0" maxOccurs="1"/>
+                                                                                        <element name="condition">
+                                                                                            <complexType>
+                                                                                                <sequence>
+                                                                                                    <element name="eq" minOccurs="1" maxOccurs="unbounded">
+                                                                                                        <complexType>
+                                                                                                            <sequence>
+                                                                                                                <element name="columnName" type="string"></element>
+                                                                                                                <element name="fieldName" type="string"></element>
+                                                                                                            </sequence>
+                                                                                                        </complexType>
+                                                                                                    </element>
+                                                                                                </sequence>
+                                                                                            </complexType>
+                                                                                        </element>
+                                                                                    </sequence>
+                                                                                </complexType>
+                                                                            </element>
+                                                                        </sequence>
+                                                                    </complexType>
+                                                                </element>
+                                                            </sequence>
+                                                        </complexType>
+                                                    </element>
+                                                </sequence>
+                                            </complexType>
+                                        </element>
+                                    </sequence>
+                                </complexType>
+                            </element>
+                        </sequence>
+                    </complexType>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+</schema>

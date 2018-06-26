@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://yunzhiyouke.com/es"
+          xsi:schemaLocation="http://yunzhiyouke.com/es mapping-schema.xsd"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <!-- columnName统一表示源数据端的字段名称，fieldName统一表示ES端的索引字段名称 -->
+    <mapping>
+        <!-- schemaName 用于定义数据域，如：数据库名，日志类型名(runtime_log,business_log)等 -->
+        <schemaName>xiyou_prod</schemaName><!-- 数据库名 -->
+        <!-- 默认使用以下分词器的字段列表配置，优先级低于field中定义的分词器 -->
+        <defaultTokenizer>
+            <ik_smart>school_name,department_name,class_name,student_name,create_name,contact_name,read_name,score_name,audit_name,addr,operator_name,real_name,county_name,city_name,province_name</ik_smart>
+            <path_hierarchy>node_path</path_hierarchy>
+        </defaultTokenizer>
+
+        <!--  collection 用于定义数据域下的同类数据集，如：数据库表，日志文件等 -->
+        <collection>
+            <!-- 该示例下为数据表名 -->
+            <name>t_sys_user</name>
+            <!-- 对应索引名，留空或不定义则与数据集名称一致 -->
+            <indexName>t_sys_user</indexName>
+            <!-- 定义各字段域的映射规则 -->
+            <field>
+
+                <columnName>real_name</columnName><!-- 源字段名，可留空 -->
+                <fieldName>real_name</fieldName><!-- 映射到es的字段名 -->
+                <mappingType>text</mappingType>
+                <tokenizer>standard</tokenizer><!-- 使用默认标准分词器 -->
+                <format>yyyy-MM-dd</format>
+                <keyword>true</keyword> <!-- 是否创建doc-values 文档 其名称为keyword 类型为keyword-->
+                <!-- 映射的子域定义 -->
+                <subField>
+                    <fieldName>ik</fieldName>
+                    <mappingType>text</mappingType>
+                    <tokenizer>ik_smart</tokenizer><!-- 使用中文分词器 -->
+                </subField>
+                <properties>
+                    <property>
+                        <columnName>real_name</columnName><!-- 源字段名，可留空 -->
+                        <mappingType>text</mappingType>
+                        <tokenizer>standard</tokenizer><!-- 使用默认标准分词器 -->
+                        <format>yyyy-MM-dd</format>
+                        <keyword>true</keyword>
+                    </property>
+                </properties>
+
+                <!-- 定义mapping规则，目前支持replaceAll和concat两类，若同时存在，则先concat在replaceAll -->
+                <mappingRule>
+                    <replaceAll><!-- Java的replaceAll，源数据由fieldName对应的值提供，当fieldName留空时，源数据默认是空字符串 -->
+                        <regex>
+                            <![CDATA[
+                            \[("\d{4}\-\d{1,2}\-\d{1,2}\s{1}\d{1,2}:\d{1,2}:\d{1,2}"),\s+("\d{4}\-\d{1,2}\-\d{1,2}\s{1}\d{1,2}:\d{1,2}:\d{1,2}")\]
+                            ]]>
+                        </regex>
+                        <replacement>
+                            <![CDATA[
+                            {"start":$1,"end":$2}
+                            ]]>
+                        </replacement>
+                    </replaceAll>
+                    <concat><!-- 同mysql的concat函数，整合多个字段或常量，构造成新字段。该示例效果：  张三(会呼吸的鱼) -->
+                        <columnName>real_name</columnName>
+                        <string>(</string>
+                        <fieldName>nickname</fieldName>
+                        <string>)</string>
+                    </concat>
+                </mappingRule>
+            </field>
+
+            <!-- 定义该数据集在不同事件时触发的数据处理规则，如果不需要触发对应的事件，则留空或不配置 -->
+            <triggers>
+                <onInsert><!-- 数据源发生insert事件时触发以下操作 -->
+                    <field>
+                        <insert>
+                            <indexName>ces</indexName>
+                            <source></source>
+                            <!-- 这里定义需要级联创建索引数据的规则 -->
+                        </insert>
+                    </field>
+
+                </onInsert>
+
+                <onUpdate>
+                    <field>
+                        <columnName>nickname</columnName><!-- 更新了nickname字段 -->
+                        <where></where><!-- 满足where条件时，触发后续的insert、merge等操作，也可不配置或留空 -->
+                        <update><!-- 需要进行级联更新动作 -->
+                            <field>t_internship_journal.student_name</field><!-- 要更新的索引名及字段名 -->
+                            <value>张三</value><!-- 要级联更新的具体值，可不配置或留空，默认使用columnName的值 -->
+                            <condition><!-- 级联更新的匹配条件，多条件时默认用 and 逻辑 -->
+                                <eq><!-- 以等于作为匹配规则 -->
+                                    <columnName>user_id</columnName><!-- 取源字段名为user_id的值  -->
+                                    <fieldName>t_internship_journal.student_id</fieldName><!-- 取级联索引及字段名为student_id的值 -->
+                                </eq>
+                                <eq><!-- 以等于作为匹配规则 -->
+                                    <columnName>user_num</columnName><!-- 取源字段名为user_num的值 -->
+                                    <fieldName>t_internship_journal.student_num</fieldName><!-- 取级联索引及字段名为student_num的值 -->
+                                </eq>
+                            </condition>
+                        </update>
+                        <update><!-- 需要进行级联更新动作 -->
+                            <field>t_internship_summary.student_name</field>
+                            <condition><!-- 级联更新的匹配条件 -->
+                                <eq><!-- 以等于作为匹配规则 -->
+                                    <columnName>user_id</columnName><!-- 取源字段名为user_id的值 -->
+                                    <fieldName>t_internship_summary.student_id</fieldName><!-- 取级联索引及字段名为student_id的值 -->
+                                </eq>
+                            </condition>
+                        </update>
+                    </field>
+
+                    <field>
+                        <columnName>status</columnName><!-- 更新了status 字段 -->
+                        <where>status==-1</where><!-- status=-1时触发以下的级联操作 -->
+                        <delete><!-- 需要进行级联删除动作 -->
+                            <field>t_internship_journal</field><!-- delete操作时，field不带具体的字段名 -->
+                            <condition><!-- 级联更新的匹配条件 -->
+                                <eq><!-- 以等于作为匹配规则 -->
+                                    <columnName>user_id</columnName><!-- 取源字段名为user_id的值 -->
+                                    <fieldName>t_internship_journal.student_id</fieldName><!-- 取级联索引及字段名为student_id的值 -->
+                                </eq>
+                            </condition>
+                        </delete>
+                    </field>
+
+                </onUpdate>
+
+                <onDelete>
+
+                    <field>
+                        <!--<columnName></columnName>--><!-- 对于onDelete事件，可以不配置columnName节点 -->
+                        <where></where><!-- 满足where条件时，触发后续的update、delete等操作，可不配置或留空 -->
+                        <update><!-- 需要进行级联更新动作，示例为删除某用户时，将其对应的所有总结状态字段值设置为-1 -->
+                            <field>t_internship_summary.status</field>
+                            <value>-1</value><!-- 要级联更新的具体值，可留空 -->
+                            <condition><!-- 级联更新的匹配条件 -->
+                                <eq><!-- 以等于作为匹配规则 -->
+                                    <columnName>user_id</columnName><!-- 取源字段名为user_id的值 -->
+                                    <fieldName>t_internship_summary.student_id</fieldName><!-- 取级联索引及字段名为student_id的值 -->
+                                </eq>
+                            </condition>
+                        </update>
+                        <delete><!-- 需要进行级联删除动作 -->
+                            <field>t_task_student</field><!-- 要删除的目标索引名 -->
+                            <condition><!-- 级联删除的匹配条件，多条件时默认用 and 逻辑 -->
+                                <eq><!-- 以等于作为匹配规则 -->
+                                    <columnName>user_id</columnName><!-- 取源字段名为user_id的值 -->
+                                    <fieldName>t_task_student.student_id</fieldName><!-- 取级联索引及字段名为student_id的值 -->
+                                </eq>
+                            </condition>
+                        </delete>
+                    </field>
+
+
+                </onDelete>
+            </triggers>
+
+        </collection>
+
+
+    </mapping>
+
+    <!-- 这里是业务日志数据域 -->
+    <mapping>
+        <schemaName>business_log</schemaName><!-- 日志类型名 -->
+
+    </mapping>
+
+</mappings>
